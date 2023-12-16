@@ -45,13 +45,9 @@ class MainActivity : AppCompatActivity() {
                     PERMISSION_REQUEST_CODE
                 )
             } else {
-                Log.d("heyy", "calling from 1")
-                // Permission already granted, start location updates
                 startLocationUpdates()
             }
         } else {
-            Log.d("heyy", "calling from 2")
-            // Versions prior to Marshmallow don't require runtime permissions
             startLocationUpdates()
         }
     }
@@ -89,11 +85,8 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, start location updates
-                Log.d("heyy", "calling from 3")
                 startLocationUpdates()
             } else {
-                // Permission denied
                 Toast.makeText(
                     this,
                     "Permission denied. Location updates are not available.",

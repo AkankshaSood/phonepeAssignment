@@ -13,9 +13,9 @@ interface Api {
         @Query("lat") lat: String,
         @Query("range") range: String,
         @Query("q") countryCode: String? = null,
-        @Query("per_page") responseSize: Int = 10,
+        @Query("per_page") responseSize: Int = Constants.PAGE_SIZE,
         @Query("page") pageNumber: Int = 1,
         @Query("client_id") apiKey: String = Constants.API_KEY
-    ): Response<VenueResponse>
+    ): Response<VenueResponse>?
 }
 

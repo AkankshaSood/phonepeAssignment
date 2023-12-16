@@ -1,5 +1,7 @@
 package com.example.phonepeassignment.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 data class VenueResponse(
@@ -8,9 +10,10 @@ data class VenueResponse(
 	val meta: Meta? = null,
 
 	@field:SerializedName("venues")
-	val venues: MutableList<VenuesItem?>
+	val venues: MutableList<VenuesItem>
 )
 
+@Entity(tableName = "venues_table")
 data class VenuesItem(
 
 	@field:SerializedName("display_location")
@@ -19,17 +22,9 @@ data class VenuesItem(
 	@field:SerializedName("country")
 	val country: String? = null,
 
-	@field:SerializedName("access_method")
-	val accessMethod: Any? = null,
-
-	@field:SerializedName("address")
-	val address: Any? = null,
 
 	@field:SerializedName("city")
 	val city: String? = null,
-
-	@field:SerializedName("timezone")
-	val timezone: Any? = null,
 
 	@field:SerializedName("url")
 	val url: String? = null,
@@ -52,24 +47,13 @@ data class VenuesItem(
 	@field:SerializedName("metro_code")
 	val metroCode: Int? = null,
 
-	@field:SerializedName("stats")
-	val stats: Stats? = null,
-
 	@field:SerializedName("popularity")
 	val popularity: Int? = null,
 
 	@field:SerializedName("name")
 	val name: String? = null,
 
-	@field:SerializedName("links")
-	val links: List<Any?>? = null,
-
-	@field:SerializedName("location")
-	val location: Location? = null,
-
-	@field:SerializedName("state")
-	val state: Any? = null,
-
+	@PrimaryKey
 	@field:SerializedName("id")
 	val id: Int? = null,
 
@@ -89,22 +73,11 @@ data class Stats(
 	val eventCount: Int? = null
 )
 
-data class Location(
-
-	@field:SerializedName("lon")
-	val lon: Any? = null,
-
-	@field:SerializedName("lat")
-	val lat: Any? = null
-)
 
 data class Geolocation(
 
 	@field:SerializedName("country")
 	val country: String? = null,
-
-	@field:SerializedName("metro_code")
-	val metroCode: Any? = null,
 
 	@field:SerializedName("city")
 	val city: String? = null,

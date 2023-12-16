@@ -2,10 +2,10 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/news_nav_graph"
-    app:startDestination="@id/newsListFragment">
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/venueListFragment">
     <fragment
-        android:id="@+id/newsListFragment"
+        android:id="@+id/venueListFragment"
         android:name="com.example.phonepeassignment.ui.fragments.VenueListFragment"
-        android:label="NewsListFragment" />
+        android:label="VenuesListFragment" />
 </navigation>

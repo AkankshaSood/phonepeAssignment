@@ -1,7 +1,15 @@
-package com.example.newsapp.db
+package com.example.phonepeassignment.db
 
-//@Database(entities = [PlaylistArticleMapping::class, PlaylistItem::class], version = 1)
-//abstract class NewsDb: RoomDatabase() {
-//    abstract fun getPlaylistDao(): PlaylistDao
-//    abstract fun getArticlePlaylistMappingDao(): ArticlePlaylistMappingDao
-//}
+import androidx.lifecycle.LiveData
+import androidx.room.Database
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.RoomDatabase
+import com.example.phonepeassignment.models.VenuesItem
+
+@Database(entities = [VenuesItem::class], version = 1)
+abstract class VenuesDb: RoomDatabase() {
+    abstract fun getVenuesDao(): VenuesDao
+}

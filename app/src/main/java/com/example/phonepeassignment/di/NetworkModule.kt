@@ -1,5 +1,4 @@
-package com.example.wayfairassignment.di
-
+package com.example.phonepeassignment.di
 import com.example.phonepeassignment.api.Api
 import com.example.phonepeassignment.utils.Constants
 import dagger.Module

@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.example.phonepeassignment.databinding.VenueItemLayoutBinding
 import com.example.phonepeassignment.models.VenuesItem
 
-class VenueListAdapter() : RecyclerView.Adapter<VenueListAdapter.NewsItemViewHolder>() {
+class VenueListAdapter() : RecyclerView.Adapter<VenueListAdapter.VenueItemViewHolder>() {
 
     private var differCallback = object : DiffUtil.ItemCallback<VenuesItem>() {
         override fun areContentsTheSame(oldItem: VenuesItem, newItem: VenuesItem) = oldItem == newItem
@@ -20,8 +20,8 @@ class VenueListAdapter() : RecyclerView.Adapter<VenueListAdapter.NewsItemViewHol
     }
     val differ = AsyncListDiffer<VenuesItem>(this, differCallback)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsItemViewHolder {
-        return NewsItemViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VenueItemViewHolder {
+        return VenueItemViewHolder(
             VenueItemLayoutBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -30,10 +30,11 @@ class VenueListAdapter() : RecyclerView.Adapter<VenueListAdapter.NewsItemViewHol
         )
     }
 
-    override fun onBindViewHolder(holder: NewsItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: VenueItemViewHolder, position: Int) {
         val item = differ.currentList[position]
         holder.heading.text= item.name
         holder.subheading.text = item.displayLocation
+        //no url present
         Glide.with(holder.itemView).load(item.url).into(holder.locationIv)
     }
 
@@ -41,7 +42,7 @@ class VenueListAdapter() : RecyclerView.Adapter<VenueListAdapter.NewsItemViewHol
         return differ.currentList.size
     }
 
-    inner class NewsItemViewHolder(binding: VenueItemLayoutBinding) :
+    inner class VenueItemViewHolder(binding: VenueItemLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val locationIv: ImageView = binding.locationIv
         val heading: TextView = binding.headingTv

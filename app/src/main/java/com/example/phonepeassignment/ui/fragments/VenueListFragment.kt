@@ -8,11 +8,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.AbsListView
+import android.widget.ProgressBar
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.example.phonepeassignment.R
 import com.example.phonepeassignment.ui.adapters.VenueListAdapter
+import com.example.phonepeassignment.utils.Constants
+import com.example.phonepeassignment.utils.Constants.DEFAULT_RANGE
 import com.example.phonepeassignment.utils.ResponseWrapper
 import com.example.phonepeassignment.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,12 +30,23 @@ class VenueListFragment : Fragment(R.layout.fragment_venue_list) {
     private val viewModel: MainViewModel by activityViewModels()
     private val handler = Handler()
     private val debounceDelay = 300L
-    private var range: Int = 12
+    private var range: Int = DEFAULT_RANGE
+    private var progressBarLayout: View? = null
+    private var rangeTextView: TextView? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews(view)
+        initRecyclerView()
+        fetchDataAndInitObservers()
+    }
+
+    private fun initViews(view: View) {
         venueRv = view.findViewById(R.id.list_rv)
         seekBar = view.findViewById<SeekBar>(R.id.range_seekbar)
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout)
+        rangeTextView = view.findViewById(R.id.range_tv)
+        rangeTextView?.text = "Restraunts within $range of current location"
         seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 handler.removeCallbacksAndMessages(null)
@@ -47,13 +62,10 @@ class VenueListFragment : Fragment(R.layout.fragment_venue_list) {
                 // Called when user stops interacting with the SeekBar
             }
         })
-        initRecyclerView()
-        fetchDataAndInitObservers()
     }
 
     private val debounceRunnable = Runnable {
-        // Handle the debounced progress value (e.g., update UI or perform an action)
-        // For demonstration purposes, a Toast message is shown here
+        rangeTextView?.text = "Restraunts within $range of current location"
         viewModel.range = range
     }
 
@@ -76,8 +88,7 @@ class VenueListFragment : Fragment(R.layout.fragment_venue_list) {
             val visibleItemCount = layoutManager.childCount
             val totalItemCount = layoutManager.itemCount
             val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
-            val isNotAtBeginning = firstVisibleItemPosition > 0
-            val isTotalMoreThanVisible = totalItemCount >= 10
+            val isTotalMoreThanVisible = totalItemCount >= Constants.PAGE_SIZE
 
             val shouldPaginate = !isLoading && !isLastPage && isAtLastItem  && isTotalMoreThanVisible && isScrolling
             if (shouldPaginate) {
@@ -88,32 +99,43 @@ class VenueListFragment : Fragment(R.layout.fragment_venue_list) {
     }
 
     private fun fetchDataAndInitObservers() {
+        viewModel.getVenuesFromDb().observe(viewLifecycleOwner) {
+            venueListAdapter?.let { adapter ->
+                if (adapter.itemCount == 0) {
+                    if (it.isNotEmpty()) {
+                        hideOrShowProgressBar(false)
+                        adapter.differ.submitList(it.toList())
+                    }
+                }
+            }
+        }
         viewModel.venueResponse.observe(viewLifecycleOwner) { response ->
             when(response) {
                 is ResponseWrapper.Success -> {
                     isLoading = false
-                    //hideProgressBar()
-                    Log.d("heyyy", "response occured!")
+                    hideOrShowProgressBar(false)
                     response.data?.let {
-                        Log.d("heyyy", "response occured! 2")
-                        venueListAdapter?.let { it2 ->
-                            Log.d("heyyy", "response occured! 3")
-                            it2.differ.submitList(it.venues)
+                        venueListAdapter?.let { adapter ->
+                            adapter.differ.submitList(it.venues.toList())
                         }
                     }
                 }
                 is ResponseWrapper.Error -> {
                     isLoading = false
                     Toast.makeText(activity, response.message, Toast.LENGTH_SHORT).show()
-//                    hideProgressBar()
+                    hideOrShowProgressBar(false)
                 }
                 else -> {
                     isLoading = true
-//                    showProgressBar()
+                    hideOrShowProgressBar(false)
 
                 }
             }
         }
+    }
+
+    private fun hideOrShowProgressBar(shouldShow: Boolean) {
+        progressBarLayout?.visibility = if (shouldShow) View.VISIBLE else View.GONE
     }
 
     private fun initRecyclerView() {
